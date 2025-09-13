@@ -1,0 +1,27 @@
+# 忽略所有__pycache__目录
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+
+# 忽略所有的.csv文件
+*.csv
+
+# 忽略model目录下的特定文件
+model/SSM.py
+model/SSMGNN_v1.py
+model/SSMGNN_v2.pyw
+
+# 忽略output目录下的所有文件，但不忽略output目录本身
+output/*
+
+# 忽略根目录下的特定文件
+main_compared.py
+length_impact.py
+noise_robustness_test.py
+result_SSMGNN.txt
+ESSMGNN.vsdx
+
+# 忽略其他可能产生的文件，如IDE文件、缓存文件等
+.DS_Store
+*.log
+*.tmp
