@@ -1,0 +1,39 @@
+================================================================================
+Experiment Time: 2025-10-13 16:18:05
+seq_len:12, pre_len:12
+data:covid, batch_size:2, embed_size:256, hidden_size:512, number_frequency:64
+Random Seed: 42
+Total Parameters: 171023
+Planned Epochs: 100
+Actual Epochs: 32
+Total Training Time: 27.59s
+Average Epoch Time: 0.86s
+Test Loss: 0.2325, MAE: 0.2164, RMSE: 0.4838, MAPE: 14.2866%, SMAPE: 0.0958 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 16:18:48
+seq_len:12, pre_len:12
+data:covid, batch_size:2, embed_size:256, hidden_size:512, number_frequency:64
+Random Seed: 10
+Total Parameters: 171023
+Planned Epochs: 100
+Actual Epochs: 38
+Total Training Time: 29.73s
+Average Epoch Time: 0.78s
+Test Loss: 0.5944, MAE: 0.2039, RMSE: 0.4663, MAPE: 17.0762%, SMAPE: 0.0923 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 16:19:16
+seq_len:12, pre_len:12
+data:covid, batch_size:2, embed_size:256, hidden_size:512, number_frequency:64
+Random Seed: 100
+Total Parameters: 171023
+Planned Epochs: 100
+Actual Epochs: 22
+Total Training Time: 14.58s
+Average Epoch Time: 0.66s
+Test Loss: 0.3538, MAE: 0.2803, RMSE: 0.5974, MAPE: 16.0138%, SMAPE: 0.1054 
+================================================================================
+

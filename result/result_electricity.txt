@@ -1,0 +1,39 @@
+================================================================================
+Experiment Time: 2025-10-13 09:19:17
+seq_len:12, pre_len:12
+data:electricity, batch_size:2, embed_size:256, hidden_size:512, number_frequency:4
+Random Seed: 42
+Total Parameters: 183983
+Planned Epochs: 100
+Actual Epochs: 42
+Total Training Time: 3082.61s
+Average Epoch Time: 73.40s
+Test Loss: 0.0085, MAE: 0.0639, RMSE: 0.0921, MAPE: 28.3997%, SMAPE: 0.2063 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 10:22:24
+seq_len:12, pre_len:12
+data:electricity, batch_size:2, embed_size:256, hidden_size:512, number_frequency:4
+Random Seed: 10
+Total Parameters: 183983
+Planned Epochs: 100
+Actual Epochs: 50
+Total Training Time: 3756.08s
+Average Epoch Time: 75.12s
+Test Loss: 0.0084, MAE: 0.0632, RMSE: 0.0915, MAPE: 27.9621%, SMAPE: 0.1984 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 11:18:29
+seq_len:12, pre_len:12
+data:electricity, batch_size:2, embed_size:256, hidden_size:512, number_frequency:4
+Random Seed: 100
+Total Parameters: 183983
+Planned Epochs: 100
+Actual Epochs: 45
+Total Training Time: 3333.21s
+Average Epoch Time: 74.07s
+Test Loss: 0.0085, MAE: 0.0637, RMSE: 0.0921, MAPE: 28.3866%, SMAPE: 0.2061 
+================================================================================
+

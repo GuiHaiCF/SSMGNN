@@ -26,7 +26,7 @@ parser.add_argument('--data', type=str, default='ECG', help='data set')
 parser.add_argument('--seq_len', type=int, default=12, help='inout length')
 parser.add_argument('--pre_len', type=int, default=12, help='predict length')
 parser.add_argument('--batch_size', type=int, default=2, help='input data batch size')
-parser.add_argument('--embed_size', type=int, default=128, help='hidden dimensions')                   
+parser.add_argument('--embed_size', type=int, default=128, help='embed dimensions')                   
 parser.add_argument('--hidden_size', type=int, default=512, help='hidden dimensions')               
 parser.add_argument('--number_frequency', type=int, default=8, help='number of frequency components')
 parser.add_argument('--epochs', type=int, default=100, help='train epochs')
@@ -35,8 +35,14 @@ parser.add_argument('--decay_step', type=int, default=5, help='Learning rate dec
 parser.add_argument('--decay_rate', type=float, default=0.5, help='Learning rate decay rate')
 parser.add_argument('--early_stop', action='store_true', help='Enable early stopping')
 parser.add_argument('--patience', type=int, default=7, help='patience for early stopping')
+
+parser.add_argument('--seed', type=int, default=42, help='random seed for reproducibility')
+
 args = parser.parse_args()
+set_seed(args.seed)
+
 print(f'Training configs: {args}')
+print(f'Using random seed: {args.seed}')
 
 # 数据集路径配置
 DATA_CONFIG = {
@@ -68,13 +74,15 @@ def prepare_data(data_name):
     return train_set, val_set, test_set
     
 
-# 训练函数
+# 训练函数 
 def train(model, train_loader, val_loader, criterion, optimizer, scheduler, epochs):
     best_loss = float('inf')
     patience = 0
+    total_train_time = 0  # 记录总训练时间
+    actual_epochs = 0     # 记录实际训练轮数
 
     # 创建模型保存目录
-    save_dir = os.path.join("output", args.data, "models")
+    save_dir = os.path.join("output", args.data, "seed_" + str(args.seed), "models")
     os.makedirs(save_dir, exist_ok=True)
     best_model_path = os.path.join(save_dir, f'best_{args.data}.pth')
 
@@ -112,7 +120,12 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, epoc
             scheduler.step()
 
         # 验证
-        val_loss, val_mape, val_mae, val_rmse = evaluate(model, val_loader, criterion)
+        val_loss, val_mape, val_mae, val_rmse, val_smape = evaluate(model, val_loader, criterion)
+
+        # 计算epoch训练时间
+        epoch_time = time.time() - start_time
+        total_train_time += epoch_time
+        actual_epochs += 1  
         
         # 早停逻辑
         if args.early_stop:
@@ -136,9 +149,10 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, epoc
         print(f'Epoch {epoch+1:3d} | Time: {time.time()-start_time:5.2f}s | '
               f'Train Loss: {train_loss/len(train_loader):5.4f} | '
               f'Val Loss: {val_loss:5.4f} | '
-              f'MAPE: {val_mape:7.4%} | MAE: {val_mae:7.4f} | RMSE: {val_rmse:7.4f}')
+              f'MAE: {val_mae:7.4f} | RMSE: {val_rmse:7.4f} | MAPE: {val_mape:7.4%} | SMAPE: {val_smape:7.4f}')
         
     print(f"Best model has been saved ")
+    return total_train_time, actual_epochs 
 
 # 评估函数（返回多指标）
 def evaluate(model, loader, criterion):
@@ -153,69 +167,11 @@ def evaluate(model, loader, criterion):
             preds.append(output.detach().cpu().numpy())
             trues.append(y.permute(0,2,1).contiguous().detach().cpu().numpy())
     
-    # 计算指标
     preds = np.concatenate(preds, axis=0)
     trues = np.concatenate(trues, axis=0)
 
-    mape, mae, rmse = evaluate_metrics(trues, preds)  
-    return loss_total/len(loader), mape, mae, rmse  
-
-# 测试集评估函数（返回多指标 + 可视化）
-def evaluate_draw(model, loader, criterion):
-    model.eval()
-    loss_total, preds, trues = 0, [], []
-
-    inputx = []
-
-    folder_path = './test_results/' + args.data + '/'
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    with torch.no_grad():
-        for i, (x, y) in enumerate(loader):
-            x, y = x.float().to(device), y.float().to(device)
-            output = model(x)
-            loss = criterion(output, y.permute(0,2,1).contiguous())
-            loss_total += float(loss)
-            preds.append(output.detach().cpu().numpy())
-            trues.append(y.permute(0,2,1).contiguous().detach().cpu().numpy())
-
-            input_current = x.detach().cpu().numpy()
-            inputx.append(input_current)
-            if i % 200 == 0:
-                # 获取当前batch的第一个样本数据
-                current_input = input_current[0, :, -1]     # [seq_len]
-                current_true = trues[-1][0, :, -1]          # [pre_len]
-                current_pred = preds[-1][0, :, -1]          # [pre_len]
-
-                # 拼接输入序列和预测/真实序列
-                gt = np.concatenate([current_input, current_true])
-                pd = np.concatenate([current_input, current_pred])
-                
-                # 可视化保存
-                visual(gt, pd, os.path.join(folder_path, f'batch_{i}.pdf'))
-    
-    # 计算指标
-    preds = np.concatenate(preds, axis=0)
-    trues = np.concatenate(trues, axis=0)
-
-    mape, mae, rmse = evaluate_metrics(trues, preds)  
-    return loss_total/len(loader), mape, mae, rmse 
-
-#测试集可视化部分
-plt.switch_backend('agg')
-def visual(true, preds=None, name='./test_results/test.pdf'):
-    """
-    Results visualization
-    """
-    plt.figure()
-    plt.plot(true, label='GroundTruth', linewidth=2)
-    if preds is not None:
-        plt.plot(preds, label='Prediction', linewidth=2)
-    plt.legend()
-    plt.show()
-    plt.savefig(name, bbox_inches='tight')
-
+    mape, mae, rmse, smape = evaluate_metrics(trues, preds)  
+    return loss_total/len(loader), mape, mae, rmse, smape  
 
 if __name__ == '__main__':
 
@@ -237,18 +193,29 @@ if __name__ == '__main__':
         number_frequency=args.number_frequency,
         feature_size=train_set.data.shape[1]
     ).to(device)
+
+    # 打印模型总参数量
+    total_params = 0
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"\nModel Total Parameters: {total_params}\n")
     
     # 优化器与学习率调度
     criterion = nn.MSELoss(reduction='mean').to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=args.decay_rate)
     
-    # 训练
-    train(model, train_loader, val_loader, criterion, optimizer, scheduler, args.epochs)
+    # 训练 
+    total_train_time, actual_epochs = train(model, train_loader, val_loader, criterion, optimizer, scheduler, args.epochs)
+
+    # 根据实际训练轮数计算平均每个epoch的训练时间
+    if actual_epochs > 0:
+        avg_epoch_time = total_train_time / actual_epochs
+    else:
+        avg_epoch_time = total_train_time
     
     # 测试
     print("\n=== Training completed. Starting testing ===")
-    save_dir = os.path.join("output", args.data, "models")
+    save_dir = os.path.join("output", args.data, "seed_" + str(args.seed), "models")
     best_model_path = os.path.join(save_dir, f'best_{args.data}.pth')
 
     try:
@@ -259,15 +226,35 @@ if __name__ == '__main__':
         exit(1)
 
     # 执行测试
-    test_loss, test_mape, test_mae, test_rmse = evaluate_draw(model, test_loader, criterion)
-    print(f'Test Loss: {test_loss:.4f} | MAPE: {test_mape:.4%} | MAE: {test_mae:.4f} | RMSE: {test_rmse:.4f}')
+    test_loss, test_mape, test_mae, test_rmse, test_smape = evaluate(model, test_loader, criterion)
+    print(f'Test Loss: {test_loss:.4f} | MAE: {test_mae:.4f} | RMSE: {test_rmse:.4f} | MAPE: {test_mape:.4%} | SMAPE: {test_smape:.4f}')
 
-    f = open("result_SSMGNN.txt", 'a')
+    # 创建结果目录并按数据集保存结果
+    result_dir = "result"
+    os.makedirs(result_dir, exist_ok=True)
+    result_file = os.path.join(result_dir, f"result_{args.data}.txt")
+
+    f = open(result_file, 'a')
+    f.write('=' * 80 + '\n')
+    f.write(f'Experiment Time: {time.strftime("%Y-%m-%d %H:%M:%S")}\n')
     f.write('seq_len:{}, pre_len:{}\n'.format(args.seq_len, args.pre_len))
     f.write('data:{}, batch_size:{}, embed_size:{}, hidden_size:{}, number_frequency:{}\n'.format(args.data, args.batch_size, args.embed_size, args.hidden_size, args.number_frequency))
-    f.write('Test Loss: {:.4f}, MAPE: {:.4%}, MAE: {:.4f}, RMSE: {:.4f} '.format(test_loss, test_mape, test_mae, test_rmse))
+    f.write('Random Seed: {}\n'.format(args.seed))
+    f.write('Total Parameters: {}\n'.format(total_params))  
+    f.write('Planned Epochs: {}\n'.format(args.epochs)) 
+    f.write('Actual Epochs: {}\n'.format(actual_epochs))
+    f.write('Total Training Time: {:.2f}s\n'.format(total_train_time))
+    f.write('Average Epoch Time: {:.2f}s\n'.format(avg_epoch_time))
+    f.write('Test Loss: {:.4f}, MAE: {:.4f}, RMSE: {:.4f}, MAPE: {:.4%}, SMAPE: {:.4f} '.format(test_loss, test_mae, test_rmse, test_mape, test_smape))
     f.write('\n')
-    f.write('\n')
+    f.write('=' * 80 + '\n\n')
     f.close()
     
+    print(f"Results saved to: {result_file}")
+    print(f"Random Seed: {args.seed}")
+    print(f"Total Parameters: {total_params}")
+    print(f"Planned Epochs: {args.epochs}, Actual Epochs: {actual_epochs}")  
+    print(f"Total Training Time: {total_train_time:.2f}s")
+    print(f"Average Epoch Time: {avg_epoch_time:.2f}s")
+
     torch.cuda.empty_cache()

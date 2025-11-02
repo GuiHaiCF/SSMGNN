@@ -1,0 +1,39 @@
+================================================================================
+Experiment Time: 2025-10-14 12:07:22
+seq_len:12, pre_len:12
+data:weather, batch_size:2, embed_size:256, hidden_size:512, number_frequency:64
+Random Seed: 42
+Total Parameters: 171023
+Planned Epochs: 100
+Actual Epochs: 100
+Total Training Time: 60365.84s
+Average Epoch Time: 603.66s
+Test Loss: 0.0026, MAE: 0.0170, RMSE: 0.0502, MAPE: 91.1305%, SMAPE: 0.4053 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-14 14:39:20
+seq_len:12, pre_len:12
+data:weather, batch_size:2, embed_size:256, hidden_size:512, number_frequency:64
+Random Seed: 10
+Total Parameters: 171023
+Planned Epochs: 100
+Actual Epochs: 66
+Total Training Time: 9070.06s
+Average Epoch Time: 137.43s
+Test Loss: 0.0027, MAE: 0.0184, RMSE: 0.0488, MAPE: 91.2848%, SMAPE: 0.4054 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-14 20:15:14
+seq_len:12, pre_len:12
+data:weather, batch_size:2, embed_size:256, hidden_size:512, number_frequency:64
+Random Seed: 100
+Total Parameters: 171023
+Planned Epochs: 100
+Actual Epochs: 49
+Total Training Time: 6671.48s
+Average Epoch Time: 136.15s
+Test Loss: 0.0026, MAE: 0.0180, RMSE: 0.0504, MAPE: 90.5750%, SMAPE: 0.4024 
+================================================================================
+

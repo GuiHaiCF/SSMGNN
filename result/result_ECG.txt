@@ -1,0 +1,39 @@
+================================================================================
+Experiment Time: 2025-10-13 08:02:43
+seq_len:12, pre_len:12
+data:ECG, batch_size:2, embed_size:128, hidden_size:512, number_frequency:8
+Random Seed: 42
+Total Parameters: 106223
+Planned Epochs: 100
+Actual Epochs: 53
+Total Training Time: 709.54s
+Average Epoch Time: 13.39s
+Test Loss: 0.0071, MAE: 0.0554, RMSE: 0.0843, MAPE: 12.5514%, SMAPE: 0.1074 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 08:15:12
+seq_len:12, pre_len:12
+data:ECG, batch_size:2, embed_size:128, hidden_size:512, number_frequency:8
+Random Seed: 10
+Total Parameters: 106223
+Planned Epochs: 100
+Actual Epochs: 57
+Total Training Time: 734.01s
+Average Epoch Time: 12.88s
+Test Loss: 0.0071, MAE: 0.0555, RMSE: 0.0844, MAPE: 12.5470%, SMAPE: 0.1077 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 08:27:23
+seq_len:12, pre_len:12
+data:ECG, batch_size:2, embed_size:128, hidden_size:512, number_frequency:8
+Random Seed: 100
+Total Parameters: 106223
+Planned Epochs: 100
+Actual Epochs: 57
+Total Training Time: 715.83s
+Average Epoch Time: 12.56s
+Test Loss: 0.0072, MAE: 0.0554, RMSE: 0.0844, MAPE: 12.5343%, SMAPE: 0.1073 
+================================================================================
+

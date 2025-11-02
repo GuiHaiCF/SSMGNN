@@ -1,0 +1,39 @@
+================================================================================
+Experiment Time: 2025-10-13 17:39:20
+seq_len:12, pre_len:12
+data:Flight, batch_size:2, embed_size:256, hidden_size:512, number_frequency:16
+Random Seed: 42
+Total Parameters: 171887
+Planned Epochs: 100
+Actual Epochs: 70
+Total Training Time: 4773.47s
+Average Epoch Time: 68.19s
+Test Loss: 0.0190, MAE: 0.1024, RMSE: 0.1372, MAPE: 113.6554%, SMAPE: 0.6213 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 18:37:38
+seq_len:12, pre_len:12
+data:Flight, batch_size:2, embed_size:256, hidden_size:512, number_frequency:16
+Random Seed: 10
+Total Parameters: 171887
+Planned Epochs: 100
+Actual Epochs: 51
+Total Training Time: 3468.60s
+Average Epoch Time: 68.01s
+Test Loss: 0.0195, MAE: 0.1041, RMSE: 0.1393, MAPE: 114.2372%, SMAPE: 0.6294 
+================================================================================
+
+================================================================================
+Experiment Time: 2025-10-13 19:20:30
+seq_len:12, pre_len:12
+data:Flight, batch_size:2, embed_size:256, hidden_size:512, number_frequency:16
+Random Seed: 100
+Total Parameters: 171887
+Planned Epochs: 100
+Actual Epochs: 37
+Total Training Time: 2544.52s
+Average Epoch Time: 68.77s
+Test Loss: 0.0193, MAE: 0.1002, RMSE: 0.1350, MAPE: 113.8135%, SMAPE: 0.6143 
+================================================================================
+

@@ -35,6 +35,11 @@ class DynamicSSM(nn.Module):
         angular_freq = 2j * torch.pi * torch.arange(n_freq, device=x_dynamic.device) / n_freq   # 角频率：2jπ * k/N, k为频率索引 [n_freq]
         
         e_term = torch.exp(-angular_freq).view(-1, 1)               # 构造指数项 e^{-jω}，view(-1,1) 用于广播 [n_freq, 1]
+
+        #  # 对A进行裁剪，确保幅度不超过1
+        # A_abs = torch.abs(self.A)
+        # self.A = self.A / torch.clamp_min(A_abs, 1.0)
+
         # Hadamard积计算（逐元素操作）
         denominator = 1 - self.A * e_term                           # 广播后维度 [K, d]
         H = (self.C * self.B) / denominator                         # [K, d]
