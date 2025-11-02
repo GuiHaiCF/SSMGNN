@@ -7,9 +7,9 @@ __pycache__/
 *.csv
 
 # 忽略model目录下的特定文件
-model/SSM.py
+# model/SSM.py
 model/SSMGNN_v1.py
-model/SSMGNN_v2.pyw
+model/SSMGNN_v2.py
 
 # 忽略output目录下的所有文件，但不忽略output目录本身
 output/*
