@@ -19,8 +19,8 @@ FLIGHT_PARAMS="2 256 512 16"
 WEATHER_PARAMS="2 256 512 64"
 
 # 数据集列表
-# DATASETS="ECG electricity traffic metr solar PeMS07 covid Flight weather"
-DATASETS="weather"
+DATASETS="ECG electricity traffic metr solar PeMS07 covid Flight weather"
+
 
 
 # 公共参数
@@ -61,7 +61,7 @@ for dataset in $DATASETS; do
     
     # 遍历所有随机种子
     # for seed in 42 10 100; do
-    for seed in 100; do
+    for seed in 42; do
         echo "--- 运行实验: $dataset (seed=$seed) ---"
         
         # 设置日志文件
